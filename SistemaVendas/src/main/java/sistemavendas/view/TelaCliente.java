@@ -17,6 +17,8 @@ public class TelaCliente extends javax.swing.JFrame {
     public TelaCliente() {
         initComponents();
         tblClientes.setModel(modelo);
+        Estilo.aplicarCadastro(this, "Cadastro de Clientes", "Inclua, altere, consulte e exclua os clientes da loja",
+                pnlCampos, tblClientes, pnlBotoes, btnIncluir, btnAlterar, btnExcluir, btnConsultar, btnLimpar);
         carregarTabela();
     }
 
@@ -38,14 +40,50 @@ public class TelaCliente extends javax.swing.JFrame {
     private void preencher(Cliente c) {
         txtId.setText(String.valueOf(c.getId()));
         txtNome.setText(c.getNome());
-        txtCpf.setText(c.getCpf());
+        txtCpf.setText(formatarCpf(c.getCpf()));
         txtTelefone.setText(c.getTelefone());
     }
 
     private boolean validar() {
-        if (txtNome.getText().isBlank() || txtCpf.getText().isBlank()) {
+        if (txtNome.getText().isBlank() || somenteDigitos(txtCpf.getText()).isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nome e CPF são obrigatórios.");
             return false;
+        }
+        if (!cpfValido(txtCpf.getText())) {
+            JOptionPane.showMessageDialog(this, "CPF inválido. Informe os 11 dígitos de um CPF válido.");
+            txtCpf.requestFocus();
+            return false;
+        }
+        return true;
+    }
+
+    private static String somenteDigitos(String texto) {
+        return texto == null ? "" : texto.replaceAll("\\D", "");
+    }
+
+    private static String formatarCpf(String cpf) {
+        String d = somenteDigitos(cpf);
+        if (d.length() != 11) {
+            return cpf;
+        }
+        return d.substring(0, 3) + "." + d.substring(3, 6) + "." + d.substring(6, 9) + "-" + d.substring(9);
+    }
+
+    // Valida o CPF pelos dois dígitos verificadores
+    private static boolean cpfValido(String cpf) {
+        String d = somenteDigitos(cpf);
+        if (d.length() != 11 || d.chars().distinct().count() == 1) {
+            return false;
+        }
+        for (int pos = 9; pos <= 10; pos++) {
+            int soma = 0;
+            for (int i = 0; i < pos; i++) {
+                soma += (d.charAt(i) - '0') * (pos + 1 - i);
+            }
+            int digito = (soma * 10) % 11 % 10;
+            if (digito != d.charAt(pos) - '0') {
+                return false;
+            }
         }
         return true;
     }
@@ -69,7 +107,7 @@ public class TelaCliente extends javax.swing.JFrame {
         lblNome = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
         lblCpf = new javax.swing.JLabel();
-        txtCpf = new javax.swing.JTextField();
+        txtCpf = new javax.swing.JFormattedTextField();
         lblTelefone = new javax.swing.JLabel();
         txtTelefone = new javax.swing.JTextField();
         scrTabela = new javax.swing.JScrollPane();
@@ -95,6 +133,12 @@ public class TelaCliente extends javax.swing.JFrame {
         pnlCampos.add(txtNome);
         lblCpf.setText("CPF:");
         pnlCampos.add(lblCpf);
+
+        try {
+            txtCpf.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###.###.###-##")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
         pnlCampos.add(txtCpf);
         lblTelefone.setText("Telefone:");
         pnlCampos.add(lblTelefone);
@@ -233,7 +277,7 @@ public class TelaCliente extends javax.swing.JFrame {
     private javax.swing.JLabel lblNome;
     private javax.swing.JTextField txtNome;
     private javax.swing.JLabel lblCpf;
-    private javax.swing.JTextField txtCpf;
+    private javax.swing.JFormattedTextField txtCpf;
     private javax.swing.JLabel lblTelefone;
     private javax.swing.JTextField txtTelefone;
     private javax.swing.JScrollPane scrTabela;

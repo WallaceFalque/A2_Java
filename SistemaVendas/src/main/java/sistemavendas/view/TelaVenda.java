@@ -20,6 +20,11 @@ public class TelaVenda extends javax.swing.JFrame {
     public TelaVenda() {
         initComponents();
         tblVendas.setModel(modelo);
+        Estilo.aplicarCadastro(this, "Vendas", "Registre vendas: o estoque do produto é atualizado automaticamente",
+                pnlCampos, tblVendas, pnlBotoes, btnIncluir, btnAlterar, btnExcluir, btnConsultar, btnLimpar);
+        btnIncluir.setText("Vender");
+        txtTotal.setFont(Estilo.FONTE_NEGRITO);
+        txtTotal.setForeground(Estilo.VERDE);
         limpar();
     }
 

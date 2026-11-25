@@ -17,6 +17,8 @@ public class TelaProduto extends javax.swing.JFrame {
     public TelaProduto() {
         initComponents();
         tblProdutos.setModel(modelo);
+        Estilo.aplicarCadastro(this, "Cadastro de Produtos", "Controle de produtos, preços e estoque",
+                pnlCampos, tblProdutos, pnlBotoes, btnIncluir, btnAlterar, btnExcluir, btnConsultar, btnLimpar);
         carregarTabela();
     }
 

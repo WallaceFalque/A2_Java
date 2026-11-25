@@ -1,3 +1,7 @@
 {
-    "java.debug.settings.onBuildFailureProceed": true
+    "java.debug.settings.onBuildFailureProceed": true,
+    "code-runner.runInTerminal": true,
+    "code-runner.executorMap": {
+        "java": "cd \"$workspaceRoot\" ; javac -encoding UTF-8 -d SistemaVendas/target/classes (Get-ChildItem -Recurse SistemaVendas/src/main/java -Filter *.java).FullName ; if ($?) { java -cp SistemaVendas/target/classes sistemavendas.Main }"
+    }
 }
